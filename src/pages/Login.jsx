@@ -54,7 +54,7 @@ export default function Login() {
               alt="Login"
               className="w-full h-screen object-cover absolute"
             />
-            <div className="max-sm:block hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce bg-red-400 p-2 rounded-full">
+            <div className="max-sm:block hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce ">
 
               <span className="text-sm text-muted-foreground mb-2 flex flex-col items-center">
                 Scroll
