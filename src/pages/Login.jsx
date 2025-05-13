@@ -55,7 +55,7 @@ export default function Login() {
               className="w-full h-screen object-cover absolute"
             />
             <div className="max-sm:block hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce ">
-              <span className="text-sm font-bold text-muted-foreground mb-2 flex flex-col items-center">
+              <span className="text-sm font-bold text-muted-foreground mb-2 flex flex-col items-center mb-20">
                 Scroll
                 <ArrowDown className="h-5 w-5 text-primary" />
               </span>
