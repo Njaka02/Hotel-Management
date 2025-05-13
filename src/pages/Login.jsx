@@ -2,6 +2,7 @@ import NJgroup from "../assets/NJgroup.png";
 import { useEffect, useState } from "react";
 import BgLogin1 from "../assets/BgLogin1.jpeg";
 import { useNavigate } from "react-router-dom";
+import { ArrowDown } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -53,6 +54,13 @@ export default function Login() {
               alt="Login"
               className="w-full h-screen object-cover absolute"
             />
+            <div className="max-sm:block hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce bg-red-400 p-2 rounded-full">
+
+              <span className="text-sm text-muted-foreground mb-2 flex flex-col items-center">
+                Scroll
+                <ArrowDown className="h-5 w-5 text-primary" />
+              </span>
+            </div>
           </div>
           <div className="relative z-10 flex items-center justify-center min-h-screen flex-col text-center pb-85">
             <img src={NJgroup} alt="NJgroup" className="w-30 h-30" />
