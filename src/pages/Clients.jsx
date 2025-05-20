@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, EllipsisVertical, ListCollapseIcon, PencilIcon, Share2Icon, Trash2Icon } from "lucide-react";
 import { listeDesClients } from "../fakeData/listeDesClients";
 
 export default function Clients() {
@@ -227,13 +227,14 @@ export default function Clients() {
                       {client.etatReservation}
                     </span>
                   </td>
-                  <td className="p-4 whitespace-nowrap">
-                    <button className="text-blue-500 hover:text-blue-700 mr-2">
+                  <td className="p-4 whitespace-nowrap text-center">
+                    {/* <button className="text-blue-500 hover:text-blue-700 mr-2">
                       ✏️
                     </button>
                     <button className="text-red-500 hover:text-red-700">
                       🗑️
-                    </button>
+                    </button> */}
+                    <ActionMenu />
                   </td>
                 </tr>
               ))
@@ -279,6 +280,70 @@ export default function Clients() {
         )}
       </div>
     </div>
+  );
+}
+
+function ActionMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // useEffect(() => {
+  //   function handleClickOutside(event) {
+  //     if (menuRef.current && !menuRef.current.contains(event.target)) {
+  //       setIsOpen(false);
+  //     }
+  //   }
+
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
+
+  useEffect(() => {
+    if (!isOpen) return; // Ne fait rien si le menu est déjà fermé
+
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]); // Ré-exécute l'effet quand isOpen change
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+  return (
+    <>
+      <div className="relative">
+        <button
+          onClick={toggleMenu}
+          ref={menuRef}
+          className="p-2 rounded-xl hover:bg-gray-200 transition-colors duration-300"
+          aria-label="Ouvrir le menu d'actions"
+        >
+          <EllipsisVertical className="w-5 h-5 text-gray-600" />
+        </button>
+
+        {isOpen && (
+          <div className="absolute right-0 mt-2 w-30 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
+            <button className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100">
+              <ListCollapseIcon className="w-4 h-4 mr-2" /> Details
+            </button>
+            <button className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100">
+              <PencilIcon className="w-4 h-4 mr-2" /> Modifier
+            </button>
+            <button className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100">
+              <Trash2Icon className="w-4 h-4 mr-2" />
+              Suprimer
+            </button>
+            <button className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100">
+              <Share2Icon className="w-4 h-4 mr-2" />
+              Partager
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

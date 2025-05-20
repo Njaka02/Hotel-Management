@@ -1,7 +1,7 @@
 import Calendar from "react-calendar";
 import { useState, useMemo } from "react";
 import DoubleBarChart from "../components/Chart/MyBarChart";
-import { listReservation, getColorClass } from "../fakeData/listReservation";
+import { getColorClass, listReservation } from "../fakeData/listReservation";
 
 export default function Calendrier() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -20,9 +20,10 @@ export default function Calendrier() {
         <div>
           <About selectedDate={selectedDate} />
 
-          {/* <div className="bg-white rounded-lg shadow-xl p-6 mt-8">
-            <StatReservation selectedDate={selectedDate} />
-          </div> */}
+          <div className="bg-white rounded-lg shadow-xl p-6 mt-8">
+            {/* <StatReservation selectedDate={selectedDate} /> */}
+            <StatReservation />
+          </div>
         </div>
       </div>
     </div>
@@ -117,6 +118,37 @@ function MonReservation({ selectedDate }) {
   );
 }
 
+function StatReservation() {
+  return (
+    <>
+      <div className="p-6">
+        <div className="flex justify-between">
+          <h2>Statistique des reservations</h2>
+          <span>Mensuel</span>
+        </div>
+        <div className="flex justify-around pt-5">
+          <div className="flex">
+            <div className="w-7 h-7 bg-teal-900 rounded-md shadow-lg"></div>
+            <h3 className="pl-2">
+              Ch. occupée <span className="font-semibold"> 170</span>
+            </h3>
+          </div>
+
+          <div className="flex">
+            <div className="w-7 h-7 bg-red-500 rounded-md shadow-lg"></div>
+            <h3 className="pl-2">
+              Ch. disponible <span className="font-semibold"> 115</span>
+            </h3>
+          </div>
+        </div>
+        <div className="pt-5">
+          <DoubleBarChart />
+        </div>
+      </div>
+    </>
+  );
+}
+
 function About({ selectedDate }) {
   const { dateStr, chambresDisponibles, chambresReservees, tauxRemplissage } =
     useMemo(() => {
@@ -146,18 +178,18 @@ function About({ selectedDate }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-60">
       <StatCard
-  title={`Chambres disponibles (${dateStr})`}
-  value={chambresDisponibles}
-  percentage={Math.round((chambresDisponibles / 60) * 100)}
-  color="bg-blue-500"
-/>
+        title={`Chambres disponibles (${dateStr})`}
+        value={chambresDisponibles}
+        percentage={Math.round((chambresDisponibles / 60) * 100)}
+        color="bg-blue-500"
+      />
 
-<StatCard
-  title={`Chambres réservées (${dateStr})`}
-  value={chambresReservees}
-  percentage={Math.round((chambresReservees / 60) * 100)}
-  color="bg-green-500"
-/>
+      <StatCard
+        title={`Chambres réservées (${dateStr})`}
+        value={chambresReservees}
+        percentage={Math.round((chambresReservees / 60) * 100)}
+        color="bg-green-500"
+      />
 
       <StatCard
         title="Taux de remplissage"

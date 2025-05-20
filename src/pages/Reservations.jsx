@@ -1,28 +1,39 @@
+import {
+  PencilIcon,
+  Share2Icon,
+  Trash2Icon,
+  ChevronLeft,
+  ChevronRight,
+  EllipsisVertical,
+  ListCollapseIcon,
+  Plus,
+} from "lucide-react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, EllipsisVertical, ListCollapseIcon, PencilIcon, Plus, Share2Icon, Trash2Icon } from "lucide-react";
-import { listeDesChambres } from "../fakeData/listeDesChambres";
+import { listDesCommand } from "../fakeData/listeCommand";
+import DatePickerWithRange from "@/components/DatePickerWithRange/DatePickerWithRange";
 
-export default function Chambres() {
+export default function Reservations() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentFilter, setCurrentFilter] = useState("Tout");
-  // const [selectedDateRange, setSelectedDateRange] = useState("");
   const itemsPerPage = 5;
 
-  const filteredChambres = listeDesChambres.filter((chambre) => {
+  const filteredCommande = listDesCommand.filter((commande) => {
     if (currentFilter === "Tout") return true;
-    if (currentFilter === "Disponibles") return chambre.status === "libre";
-    if (currentFilter === "Reservées") return chambre.status === "occupé";
+    if (currentFilter === "Completé") return commande.status === "Complete";
+    if (currentFilter === "En cours") return commande.status === "En cours";
     return true;
   });
+
   //   Calcul des données à afficher (utilise maintenant filteredClients)
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredChambres.slice(
+  const currentItems = filteredCommande.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredChambres.length / itemsPerPage);
 
+  const totalPages = Math.ceil(filteredCommande.length / itemsPerPage);
   //   Fonctions de navigation
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -36,40 +47,36 @@ export default function Chambres() {
     }
   };
 
-  // Fonction pour changer le filtre
   const handleFilterChange = (filter) => {
     setCurrentFilter(filter);
     setCurrentPage(1);
   };
-
   return (
     <>
       <div className="bg-gray-100 h-auto p-10">
         <div className="pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          {/* Filtres à gauche */}
           <div className="flex flex-wrap gap-2 md:gap-4">
-            {["Tout", "Disponibles", "Reservées"].map((filter) => (
+            {["Tout", "Completé", "En cours"].map((comandType) => (
               <button
-                key={filter}
-                onClick={() => handleFilterChange(filter)}
+                key={comandType}
+                onClick={() => handleFilterChange(comandType)}
                 className={`px-4 py-2 rounded-md w-[125px] font-bold border border-transparent transition-colors duration-300 opacity-70 ${
-                  currentFilter === filter
+                  currentFilter === comandType
                     ? "font-bold text-purple-700 bg-purple-300"
                     : "hover:text-purple-600"
                 }`}
               >
-                {filter}
+                {comandType}
               </button>
             ))}
           </div>
 
-          {/* Select à droite */}
-          <div className="w-full md:w-auto">
-            <select className="w-full md:w-64 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
-              <option value="">
-                Nouvelle chambre <Plus size={16} className="inline" />
-              </option>
-            </select>
+          <div className="w-full md:w-auto flex  gap-2">
+            <DatePickerWithRange />
+            <button className="flex justify-between items-center w-full md:w-64 px-4 py-1 font-semibold rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
+              Nouvelle reservation
+              <Plus size={15} className="ml-2" />
+            </button>
           </div>
         </div>
 
@@ -78,11 +85,12 @@ export default function Chambres() {
             <thead className="bg-gray-50">
               <tr>
                 {[
-                  "Nom de chambre",
-                  "Type de lit",
-                  "Etage",
-                  "Equipements",
-                  "Prix",
+                  "Client",
+                  "Date",
+                  "Réference",
+                  "Total",
+                  "Payé",
+                  "Solde",
                   "Status",
                   "Actions",
                 ].map((tHead, index) => (
@@ -95,6 +103,7 @@ export default function Chambres() {
                 ))}
               </tr>
             </thead>
+
             <tbody className="bg-white divide-y divide-gray-200">
               {currentItems.length > 0 ? (
                 currentItems.map((client, index) => (
@@ -107,34 +116,56 @@ export default function Chambres() {
                           className="w-20 h-13 rounded-lg mr-3 object-cover"
                         />
                         <div>
+                          <p className="font-medium">{client.nom}</p>
                           <p className="text-red-500 text-xs">
                             {client.identifiant}
                           </p>
-                          <p className="font-medium text-xs">{client.nom}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 whitespace-wrap opacity-70">
-                      {client.typeDeLit}
+
+                    <td className="p-4 whitespace-wrap opacity-80">
+                      {client.date}
                     </td>
-                    <td className="p-4 whitespace-nowrap">
-                      <p className="font-bold">{client.etage}</p>
+
+                    <td className="p-4 whitespace-wrap opacity-60 text-sm">
+                      {client.reference}
                     </td>
-                    <td className="p-4 whitespace-nowrap">
-                      <p className="text-xs opacity-70 text-wrap">
-                        {client.equipements}
-                      </p>
+
+                    <td className="p-4 whitespace-wrap font-semibold text-sm">
+                      {client.total}
                     </td>
-                    <td className="p-4 whitespace-wrap text-xs font-bold whitespace-nowrap">
-                      {client.prix}
+
+                    <td
+                      className={`p-4 whitespace-wrap font-semibold text-sm ${
+                        parseNumericValue(client.statutPaiement) < 100000
+                          ? "text-black"
+                          : parseNumericValue(client.statutPaiement) <= 200000
+                          ? "text-teal-700"
+                          : "text-green-500"
+                      }`}
+                    >
+                      {client.statutPaiement}
+                    </td>
+
+                    <td
+                      className={`p-4 whitespace-wrap font-semibold text-sm ${
+                        parseNumericValue(client.solde) < 10000
+                          ? "text-black"
+                          : parseNumericValue(client.solde) <= 100000
+                          ? "text-red-500"
+                          : "text-green-500"
+                      }`}
+                    >
+                      {client.solde}
                     </td>
 
                     <td className="p-4 whitespace-nowrap">
                       <span
                         className={`px-4 py-3 inline-block min-w-[100px] text-center rounded-lg text-xs ${
-                          client.status === "libre"
+                          client.status === "Complete"
                             ? "bg-teal-900 text-white"
-                            : client.status === "occupé"
+                            : client.status === "En cours"
                             ? "bg-red-500 text-white"
                             : "bg-gray-100 text-gray-800"
                         }`}
@@ -142,6 +173,7 @@ export default function Chambres() {
                         {client.status}
                       </span>
                     </td>
+
                     <td className="p-4 whitespace-nowrap text-center">
                       {/* <button className="text-blue-500 hover:text-blue-700 mr-2">
                         ✏️
@@ -163,7 +195,7 @@ export default function Chambres() {
             </tbody>
           </table>
           {/* Pagination */}
-          {filteredChambres.length > 0 && (
+          {listDesCommand.length > 0 && (
             <div className="mt-4 flex items-center justify-end my-2 mx-2">
               <ChevronLeft
                 size={50}
@@ -198,6 +230,11 @@ export default function Chambres() {
   );
 }
 
+function parseNumericValue(currencyString) {
+  // Supprime " Ar", les espaces et convertit en nombre
+  return parseInt(currencyString.replace(/ Ar/g, "").replace(/\s/g, ""), 10);
+}
+
 function ActionMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
@@ -227,6 +264,8 @@ function ActionMenu() {
   }, [isOpen]); // Ré-exécute l'effet quand isOpen change
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="relative">
@@ -241,9 +280,14 @@ function ActionMenu() {
 
         {isOpen && (
           <div className="absolute right-0 mt-2 w-30 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
-            <button className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100">
-              <ListCollapseIcon className="w-4 h-4 mr-2" /> Details
-            </button>
+            <Link
+            // to="/details"
+              // onClick={() => navigate("/details")}
+              className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <ListCollapseIcon className="w-4 h-4 mr-2" />
+              Details
+            </Link>
             <button className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100">
               <PencilIcon className="w-4 h-4 mr-2" /> Modifier
             </button>
@@ -255,6 +299,7 @@ function ActionMenu() {
               <Share2Icon className="w-4 h-4 mr-2" />
               Partager
             </button>
+            <Outlet />
           </div>
         )}
       </div>

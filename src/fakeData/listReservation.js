@@ -541,9 +541,8 @@ export const listReservation = [
   },
 ];
 
-
 export const getColorClass = (number) => {
-    if (number >= 20) return "bg-orange-500";
-    if (number >= 1) return "bg-teal-900";
-    return "bg-red-500";
-  };
+  if (number >= 20) return "bg-orange-500";
+  if (number >= 10) return "bg-teal-900";
+  return "bg-red-500";
+};
